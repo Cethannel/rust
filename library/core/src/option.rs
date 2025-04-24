@@ -2129,6 +2129,40 @@ impl<T> From<T> for Option<T> {
     }
 }
 
+impl<T, U> From<Option<T>> for Option<U>
+where
+    U: From<T>,
+{
+    /// Converts from `Option<T>` to `Option<U>` where U: From<T>.
+    ///
+    /// # Examples
+    ///
+    /// If it is Some then it converts the inner value
+    ///
+    /// ```
+    /// let some8: Option<u8> = Some(32);
+    /// let some16: Option<u16> = Option::from(some8);
+    ///
+    /// println!("Can still print some: {some16:?}");
+    ///
+    /// assert_eq!(some16, Some(32));
+    ///
+    /// ```
+    ///
+    /// If it is None then it remains None
+    ///
+    /// ```
+    /// let some8: Option<u8> = None;
+    /// let some16: Option<u16> = Option::from(some8);
+    ///
+    /// assert_eq!(some16, None);
+    ///
+    /// ```
+    fn from(val: Option<T>) -> Option<U> {
+        val.map(From::from)
+    }
+}
+
 #[stable(feature = "option_ref_from_ref_option", since = "1.30.0")]
 impl<'a, T> From<&'a Option<T>> for Option<&'a T> {
     /// Converts from `&Option<T>` to `Option<&T>`.
